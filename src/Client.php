@@ -27,8 +27,23 @@ use GuzzleHttp\Psr7\MultipartStream;
  */
 class Client
 {
+    /** @var \GuzzleHttp\Client Internal instance of the HTTP client */
     private \GuzzleHttp\Client $oClient;
 
+    /**
+     * Constructor
+     * 
+     * @param array $kConfig
+     *  An array of configuration options for the webservice client
+     * 
+     *  - hostname: The host name of a BLOX site
+     *  - api_key: API key generated in the BLOX admin
+     *  - api_secret: API secret that is paired with the API key
+     *  - guzzle: An array of configuration options that will be passed
+     *       to the internal \GuzzleHttp\Client instance. Some options
+     *       cannot be overridden
+     *  - user_agent: Override the default user agent that is passed
+     */
     public function __construct(array $kConfig = [])
     {
         // Mandatory configuration options
@@ -63,6 +78,22 @@ class Client
         $this->oClient = new \GuzzleHttp\Client($kOpts);
     }
 
+    /**
+     * Perform a GET HTTP request to the API end-point
+     * 
+     * @return Result
+     *  A wrapper containing the original response and an
+     *  already parsed payload for immediate use
+     * 
+     * @param string $sModule
+     *  The webservice module to perform requests against
+     * 
+     * @param string $sAction
+     *  The webservice action to perform requests against
+     * 
+     * @param array $kParams
+     *  The parameters to pass to the query string
+     */
     public function get( string $sModule, string $sAction, array $kParams = []) : Result
     {
         $oResponse = $this->oClient->get($sModule . '/' . $sAction, [
@@ -111,7 +142,7 @@ class Client
         return $this->handleResponse($oResponse);
     }
 
-    public function handleResponse(ResponseInterface $oResponse) : Result
+    private function handleResponse(ResponseInterface $oResponse) : Result
     {
         $oResult = new Result($oResponse);
         if ($oResult->isError()) {
