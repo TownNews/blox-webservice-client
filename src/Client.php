@@ -9,6 +9,22 @@ use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\MultipartStream;
 
+/**
+ * BLOX webservice client
+ * 
+ * This client can be used to perform API calls to a BLOX-powered
+ * web site. Access will need to be granted by a site administrator
+ * in order to perform API calls. To configure a client, you will
+ * need:
+ * 
+ * - hostname: The host name of a BLOX site
+ * - api_key: API key generated in the BLOX admin
+ * - api_secret: API secret that goes along with the API key
+ * 
+ * @author Patrick O'Lone <polone@townnews.com>
+ * @copyright 2022 TownNews.com
+ * @license MIT
+ */
 class Client
 {
     private \GuzzleHttp\Client $oClient;
