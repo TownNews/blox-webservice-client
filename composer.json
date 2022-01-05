@@ -6,7 +6,7 @@
         "psr/http-client": "^1.0",
         "guzzlehttp/guzzle": "^7.4"
     },
-    "license": "LGPL",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "Townnews\\BLOX\\Webservice\\": "src/"
