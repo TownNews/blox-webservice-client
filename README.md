@@ -1,11 +1,11 @@
-== Installation ==
+## Installation
 To add the BLOX webservice client to your project via `composer`:
 
 ```
 composer require townnews/blox-webservice-client
 ```
 
-== Usage ==
+## Configuring a client
 Configure a client instance by providing the three required configuration
 options:
 
@@ -31,6 +31,7 @@ Internally, the class uses a Guzzle HTTP client. You can provide some options to
 the internal client by passing the `guzzle` configuration parameter along with a
 compatible array for the constructor of a `\GuzzleHttp\Client` instance.
 
+## Make a HTTP GET API call
 To make an API call using a GET call, you run:
 
 ```
@@ -66,6 +67,7 @@ if ($oResp->getStatusCode() == 204) {
 If the API request resulted in an error, an exception will be thrown instead of a `Result` object being
 returned.
 
+## Make a HTTP POST API call
 To make an API call with some files to upload as well:
 
 ```
@@ -86,11 +88,9 @@ Lastly, if no files are being posted, it is possible to make the body a JSON pay
 with end-points that support this mechanism. This can be done by calling:
 
 ```
-$oResult = $oClient->post('editorial', 'update_asset', ['id' => 'image-1'], json_encode([
-    [
-        'op' => 'replace',
-        'path' => '/title',
-        'value' => 'New Image Asset Title'
-    ]
+$oResult = $oClient->post('editorial', 'replace_asset', json_encode([
+    'id' => 'article-1',
+    'title' => 'Example Article Title',
+    'content' => '<p>Paragraph 1</p>'
 ]);
 ```
