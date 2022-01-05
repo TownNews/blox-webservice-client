@@ -1,0 +1,24 @@
+{
+    "name": "townnews/blox-webservice-client",
+    "description": "Provides a basic webservice client for making API calls to the BLOX CMS platform",
+    "type": "library",
+    "require": {
+        "psr/http-client": "^1.0",
+        "guzzlehttp/guzzle": "^7.4"
+    },
+    "license": "LGPL",
+    "autoload": {
+        "psr-4": {
+            "Townnews\\BLOX\\Webservice\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Patrick O'Lone",
+            "email": "polone@townnews.com"
+        }
+    ],
+    "require-dev": {
+        "vlucas/phpdotenv": "^5.4"
+    }
+}
