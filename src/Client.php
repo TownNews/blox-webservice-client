@@ -19,7 +19,7 @@ class Client
 
         foreach(['hostname', 'api_key', 'api_secret'] as $sKey) {
             if (empty($kConfig[$sKey])) {
-                throw new Exception('Option `' . $sKey . '` must not be empty');
+                throw new \Exception('Option `' . $sKey . '` must not be empty');
             }
         }
 

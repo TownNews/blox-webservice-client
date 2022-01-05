@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Townnews\BLOX\Webservice;
 
 use Psr\HTTP\Message\ResponseInterface;
+use Exception\ResultException;
 
 class Result
 {
@@ -32,9 +33,9 @@ class Result
         return $this->oResponse;
     }
 
-    public function toException() : Exception
+    public function toException() : ResultException
     {
-        return new Exception(
+        return new ResultException(
             $this->oPayload->message ?? 'No error message was set',
             $this->oPayload->code ?? -1
         );
