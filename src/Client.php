@@ -8,19 +8,20 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\MultipartStream;
+use GuzzleHttp\Psr7\Utils;
 
 /**
  * BLOX webservice client
- * 
+ *
  * This client can be used to perform API calls to a BLOX-powered
  * web site. Access will need to be granted by a site administrator
  * in order to perform API calls. To configure a client, you will
  * need:
- * 
+ *
  * - hostname: The host name of a BLOX site
  * - api_key: API key generated in the BLOX admin
  * - api_secret: API secret that goes along with the API key
- * 
+ *
  * @author Patrick O'Lone <polone@townnews.com>
  * @copyright 2022 TownNews.com
  * @license MIT
@@ -32,10 +33,10 @@ class Client
 
     /**
      * Constructor
-     * 
+     *
      * @param array $kConfig
      *  An array of configuration options for the webservice client
-     * 
+     *
      *  - hostname: The host name of a BLOX site
      *  - api_key: API key generated in the BLOX admin
      *  - api_secret: API secret that is paired with the API key
@@ -48,7 +49,7 @@ class Client
     {
         // Mandatory configuration options
 
-        foreach(['hostname', 'api_key', 'api_secret'] as $sKey) {
+        foreach (['hostname', 'api_key', 'api_secret'] as $sKey) {
             if (empty($kConfig[$sKey])) {
                 throw new \Exception('Option `' . $sKey . '` must not be empty');
             }
@@ -57,11 +58,12 @@ class Client
         // Configuration will set overridable defaults, followed by user
         // configuration via `guzzle` option, followed by forced options
 
-        $kOpts = array_merge([
+        $kOpts = array_merge(
+            [
             'connect_timeout' => 3
-        ],
-        $kConfig['guzzle'] ?? [],
-        [
+            ],
+            $kConfig['guzzle'] ?? [],
+            [
             'base_uri' => 'https://' . $kConfig['hostname'] . '/tncms/webservice/v1/',
             'auth' => [
                 $kConfig['api_key'],
@@ -73,28 +75,54 @@ class Client
                 'Accept-Encoding' => 'gzip'
             ],
             'http_errors' => false
-        ]);
+            ]
+        );
 
         $this->oClient = new \GuzzleHttp\Client($kOpts);
     }
 
     /**
+     * A factory for retieving module client wrapper instances
+     *
+     * @return Module
+     *  An instance of a `Module`. Not all modules of the webservice are provided
+     *  as of yet.
+     *
+     * @param string $sModule
+     *  The module to load
+     *
+     * @param array $kConfig
+     *  The configuration for the `Client` instance that will be
+     *  passed to the module
+     */
+    public static function getModule(string $sModule, array $kConfig): Module
+    {
+        $oClient = new self($kConfig);
+        $sClass = __NAMESPACE__ . '\\Module\\' . $sModule;
+        if (class_exists($sClass, true)) {
+            return new $sClass($oClient);
+        }
+
+        throw new \Exception('Client module not available: ' . $sModule);
+    }
+
+    /**
      * Perform a GET HTTP request to the API end-point
-     * 
+     *
      * @return Result
      *  A wrapper containing the original response and an
      *  already parsed payload for immediate use
-     * 
+     *
      * @param string $sModule
      *  The webservice module to perform requests against
-     * 
+     *
      * @param string $sAction
      *  The webservice action to perform requests against
-     * 
+     *
      * @param array $kParams
      *  The parameters to pass to the query string
      */
-    public function get( string $sModule, string $sAction, array $kParams = []) : Result
+    public function get(string $sModule, string $sAction, array $kParams = []): Result
     {
         $oResponse = $this->oClient->get($sModule . '/' . $sAction, [
             'query' => $kParams
@@ -103,13 +131,12 @@ class Client
         return $this->handleResponse($oResponse);
     }
 
-    public function post( string $sModule, string $sAction, array $kParams = []) : Result
+    public function post(string $sModule, string $sAction, array $kParams = []): Result
     {
         // Build multipart message for POST so files can be uploaded as well
 
         $aParams = [];
-        foreach($kParams as $sKey => $xValue) {
-
+        foreach ($kParams as $sKey => $xValue) {
             $kField = [
                 'name' => $sKey,
                 'contents' => $xValue
@@ -118,12 +145,11 @@ class Client
             if ($xValue[0] == '@') {
                 $xValue = substr($xValue, 1);
                 if (is_file($xValue)) {
-                    $kField['contents'] = Psr7\Utils::tryFopen($xValue, 'r');
+                    $kField['contents'] = Utils::tryFopen($xValue, 'r');
                 }
             }
 
             $aParams[] = $kField;
-
         }
 
         $oResponse = $this->oClient->post($sModule . '/' . $sAction, [
@@ -133,7 +159,7 @@ class Client
         return $this->handleResponse($oResponse);
     }
 
-    public function postAsJSON(string $sAction, string $sModule, $xPayload) : Result
+    public function postAsJSON(string $sAction, string $sModule, $xPayload): Result
     {
         $oResponse = $this->oClient->post($sModule . '/' . $sAction, [
             'json' => $xPayload
@@ -142,7 +168,7 @@ class Client
         return $this->handleResponse($oResponse);
     }
 
-    private function handleResponse(ResponseInterface $oResponse) : Result
+    private function handleResponse(ResponseInterface $oResponse): Result
     {
         $oResult = new Result($oResponse);
         if ($oResult->isError()) {

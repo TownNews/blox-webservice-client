@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Townnews\BLOX\Webservice;
 
-use Psr\HTTP\Message\ResponseInterface;
-use Exception\ResultException;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Result from a BLOX webservice API call
- * 
+ *
  * @author Patrick O'Lone <polone@townnews.com>
  * @copyright TownNews.com 2022
  * @license MIT
@@ -27,46 +26,46 @@ class Result
 
     /**
      * Checks to see if the response is an error state
-     * 
+     *
      * @return bool
      *  Returns `true` if the instance represents an error state
      */
-    public function isError() : bool
+    public function isError(): bool
     {
         return ($this->oResponse->getStatusCode() >= 400);
     }
 
     /**
      * The parsed payload
-     * 
+     *
      * @return \stdClass
      *  Returns the JSON payload from the instance
      */
-    public function getPayload() : \stdClass
+    public function getPayload(): \stdClass
     {
         return $this->oPayload;
     }
 
     /**
      * Returns the original PSR7 HTTP response
-     * 
+     *
      * @return ResponseInterface
      *  The PSR7 HTTP response from the API call
      */
-    public function getResponse() : ResponseInterface
+    public function getResponse(): ResponseInterface
     {
         return $this->oResponse;
     }
 
     /**
      * Create an exception instance based on payload
-     * 
-     * @return ResultException
+     *
+     * @return Exception\ResultException
      *  An exception from the API call
      */
-    public function toException() : ResultException
+    public function toException(): Exception\ResultException
     {
-        return new ResultException(
+        return new Exception\ResultException(
             $this->oPayload->message ?? 'No error message was set',
             $this->oPayload->code ?? -1
         );

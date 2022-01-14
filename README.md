@@ -88,9 +88,9 @@ Lastly, if no files are being posted, it is possible to make the body a JSON pay
 with end-points that support this mechanism. This can be done by calling:
 
 ```
-$oResult = $oClient->post('editorial', 'replace_asset', json_encode([
+$oResult = $oClient->post('editorial', 'replace_asset', [
     'id' => 'article-1',
     'title' => 'Example Article Title',
     'content' => '<p>Paragraph 1</p>'
-]);
+);
 ```

@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Tests;
+
 use PHPUnit\Framework\TestCase;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -9,7 +11,7 @@ use GuzzleHttp\Psr7\Response;
 
 final class GetTest extends TestCase
 {
-    public function testSearchQuery() : void
+    public function testSearchQuery(): void
     {
         $oSearchPayload = (object) [
             'total' => 1,

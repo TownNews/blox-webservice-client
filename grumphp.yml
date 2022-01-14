@@ -1,0 +1,14 @@
+grumphp:
+    ascii:
+        failed: ~
+        succeeded: ~
+    tasks:
+        phpunit: ~
+        phpstan:
+            autoload_file: ~
+            configuration: ~
+            memory_limit: "-1"
+            use_grumphp_paths: true
+        phpcs:
+            standard:
+                - 'PSR12'

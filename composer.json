@@ -20,6 +20,9 @@
     ],
     "require-dev": {
         "vlucas/phpdotenv": "^5.4",
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.5",
+        "phpro/grumphp": "^1.7",
+        "squizlabs/php_codesniffer": "*",
+        "phpstan/phpstan": "^1.3"
     }
 }
